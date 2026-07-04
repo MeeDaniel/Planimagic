@@ -33,6 +33,7 @@ class Point:
             self.color = color
 
         self.field: Union[Field, None] = field
+        self.set_pos(*self.get_pos()) # Adjust to the field
     
     def set_pos(self, x: float, y: float):
         if self.field is not None:
