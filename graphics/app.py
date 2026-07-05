@@ -2,7 +2,7 @@ from typing import Union, Tuple, List, Callable
 import pygame_app as pa
 import pygame
 
-from core import System, Point, Segment
+from core import System, Point, Segment, Line
 from .graphics_config import GraphicsConfig
 from .exceptions import UnknownShapeType
 
@@ -121,6 +121,8 @@ class App(pa.App):
         for name, shape in shapes.items():
             if isinstance(shape, Segment):
                 self.draw_segment(shape)
+            elif isinstance(shape, Line):
+                self.draw_line(shape)
             else:
                 raise UnknownShapeType(name)
     
@@ -129,3 +131,28 @@ class App(pa.App):
         color.a = 128
         from_, to = segment.get_key_points()
         pygame.draw.line(self.__transparent_surface, color, from_.get_pos(), to.get_pos())
+
+    def draw_line(self, line: Line):
+        color = pygame.Color(line.color)
+        color.a = 128
+        from_, to = line.get_key_points()
+        from_x, from_y = from_.get_pos()
+        to_x, to_y = to.get_pos()
+
+        if (from_y == to_y): # Edge case: horizontal line
+            pygame.draw.line(
+                self.__transparent_surface,
+                color,
+                (0, from_y),
+                (self.__transparent_surface.get_width(), to_y)
+            )
+        elif (from_x == to_x): # Edge case: vertical line
+            pygame.draw.line(
+                self.__transparent_surface,
+                color,
+                (from_x, 0),
+                (to_x, self.__transparent_surface.get_height())
+            )
+        else:
+            # TODO: found out how to draw a line from edges of the screen.
+            pass
