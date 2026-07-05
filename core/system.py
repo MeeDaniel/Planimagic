@@ -1,4 +1,4 @@
-from typing import Set, Dict
+from typing import Dict
 
 from .point import Point
 from .shape import Shape
@@ -7,7 +7,7 @@ from .shape import Shape
 class System:
     def __init__(self):
         self.__points: Dict[str, Point] = {}
-        self.__shapes: Set[Shape] = set()
+        self.__shapes: Dict[str, Shape] = {}
     
     def add_point(self, point: Point):
         self.__points[point.get_name()] = point
@@ -19,14 +19,14 @@ class System:
             del self.__points[name]
     
     def add_shape(self, shape: Shape):
-        self.__shapes.add(shape)
+        self.__shapes[shape.get_name()] = shape
     
     def get_points(self) -> Dict[str, Point]:
         return self.__points.copy()
 
-    def get_shapes(self) -> Set[Shape]:
+    def get_shapes(self) -> Dict[str, Shape]:
         return self.__shapes.copy()
     
     def clear_system(self):
         self.__points = {}
-        self.__shapes = set()
+        self.__shapes = {}
