@@ -11,7 +11,8 @@ class App(pa.App):
     def __init__(
             self,
             system: System,
-            reload_system_method: Callable,
+            workspace_update_method: Callable,
+            workspace_apply_changes_method: Callable,
             config: GraphicsConfig = GraphicsConfig(),
             window: Union[Tuple[int, int], List[int]]=(1280, 720),
             tps:int=60,
@@ -22,7 +23,8 @@ class App(pa.App):
         super().__init__(window, tps, title, window_flags | pygame.SRCALPHA)
         self.system = system
         self.config = config
-        self.reload_system_method = reload_system_method
+        self.workspace_update_method = workspace_update_method
+        self.workspace_apply_changes_method = workspace_apply_changes_method
         
         # === Graphics ===
         self.__transparent_surface = pygame.Surface(window, pygame.SRCALPHA)
@@ -31,7 +33,7 @@ class App(pa.App):
         self.__grabbed_point: Union[Point, None] = None
     
     def update(self) -> None:
-        self.reload_system_method()
+        self.workspace_update_method(self.system)
         self.move_points()
 
     def draw(self) -> None:
