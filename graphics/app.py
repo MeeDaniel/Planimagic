@@ -33,8 +33,8 @@ class App(pa.App):
         self.__grabbed_point: Union[Point, None] = None
     
     def update(self) -> None:
+        self.drag_points()
         self.workspace_update_method(self.system)
-        self.move_points()
 
     def draw(self) -> None:
         self.screen.fill(self.config.BACKGROUND_COLOR)
@@ -47,7 +47,7 @@ class App(pa.App):
 
     # === Logic ===
 
-    def move_points(self) -> None:
+    def drag_points(self) -> None:
         mouse_rel = pygame.mouse.get_rel()
 
         cursor = pygame.SYSTEM_CURSOR_ARROW
