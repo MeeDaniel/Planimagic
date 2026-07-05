@@ -139,20 +139,91 @@ class App(pa.App):
         from_x, from_y = from_.get_pos()
         to_x, to_y = to.get_pos()
 
-        if (from_y == to_y): # Edge case: horizontal line
-            pygame.draw.line(
-                self.__transparent_surface,
-                color,
-                (0, from_y),
-                (self.__transparent_surface.get_width(), to_y)
-            )
-        elif (from_x == to_x): # Edge case: vertical line
-            pygame.draw.line(
-                self.__transparent_surface,
-                color,
-                (from_x, 0),
-                (to_x, self.__transparent_surface.get_height())
-            )
+        screen_left_bound = 0
+        screen_right_bound = self.__transparent_surface.get_width()
+        screen_top_bound = 0
+        screen_bottom_bound = self.__transparent_surface.get_height()
+
+        # Task: find BEGIN=(begin_x, begin_y) and END=(end_x, end_y) points to draw the line. These points shall lay on edges of the screen
+        #
+        # My solution:
+        # Firstly note, that the screen has four edges: left bound, top bound, right bound, and bottom bound. Each of
+        # these bounds can be represented as segments or a lines. Let call these lines left line, top line, right line,
+        # and bottom line respectively. Given line either parallel to some of these lines or intersect all of them.
+        # 
+        # The first case is very simple, it is described in the code below (two edge cases).
+        # 
+        # The second case is a bit harder. Let define intersection points of the given line with the left, top, right,
+        # and bottom lines as (left_x, left_y), (top_x, top_y), (right_x, right_y), and (bottom_x, bottom_y). Obviously,
+        #
+        # left_x = screen_left_bound
+        # top_y = screen_top_bound
+        # right_x = screen_right_bound
+        # bottom_y = screen_bottom_bound
+        #
+        # To find left_y let consider the given line in the parametric form:
+        #
+        # P_x = from_x + (to_x - from_x) * t
+        # P_y = from_y + (to_y - from_y) * t
+        # Where P = (P_x, P_y) ∈ the given line
+        #
+        # P_x = left_x ⟺ t = (left_x - from_x) / (to_x - from_x) ⟺
+        # P_y = from_y + (to_y - from_y) * (left_x - from_x) / (to_x - from_x) ⟺
+        # left_y = from_y + (to_y - from_y) * (left_x - from_x) / (to_x - from_x) ⟺
+        # left_y = from_y + (to_y - from_y) * (screen_left_bound - from_x) / (to_x - from_x)
+        #
+        # Similarly,
+        # right_y = from_y + (to_y - from_y) * (screen_right_bound - from_x) / (to_x - from_x)
+        # top_x = from_x + (to_x - from_x) * (screen_top_bound - from_y) / (to_y - from_y)
+        # bottom_x = from_x + (to_x - from_x) * (screen_bottom_bound - from_y) / (to_y - from_y)
+        #
+        # If intersection point with left line is out of the screen, then our BEGIN point is on the top or bottom line.
+        # Likewise for the right line
+
+        begin_x, begin_y = None, None
+        end_x, end_y = None, None
+
+        if (from_y == to_y): # Edge case: line is horizontal
+            begin_x, begin_y = screen_left_bound, from_y
+            end_x, end_y = screen_right_bound, to_y
+        elif (from_x == to_x): # Edge case: line is vertical
+            begin_x, begin_y = from_x, screen_top_bound
+            end_x, end_y = to_x, screen_bottom_bound
         else:
-            # TODO: found out how to draw a line from edges of the screen.
-            pass
+            left_y = from_y + (to_y - from_y) * (screen_left_bound - from_x) / (to_x - from_x)
+            right_y = from_y + (to_y - from_y) * (screen_right_bound - from_x) / (to_x - from_x)
+
+            if (left_y < screen_top_bound and right_y < screen_top_bound) or \
+                    (left_y > screen_bottom_bound and right_y > screen_bottom_bound):
+                return # No need to draw
+
+            if screen_top_bound <= left_y <= screen_bottom_bound:
+                begin_x = screen_left_bound
+                begin_y = left_y
+            elif left_y < screen_top_bound:
+                top_x = from_x + (to_x - from_x) * (screen_top_bound - from_y) / (to_y - from_y)
+                begin_x = top_x
+                begin_y = screen_top_bound
+            else:
+                bottom_x = from_x + (to_x - from_x) * (screen_bottom_bound - from_y) / (to_y - from_y)
+                begin_x = bottom_x
+                begin_y = screen_bottom_bound
+            
+            if screen_top_bound <= right_y <= screen_bottom_bound:
+                end_x = screen_right_bound
+                end_y = right_y
+            elif right_y < screen_top_bound:
+                top_x = from_x + (to_x - from_x) * (screen_top_bound - from_y) / (to_y - from_y)
+                end_x = top_x
+                end_y = screen_top_bound
+            else:
+                bottom_x = from_x + (to_x - from_x) * (screen_bottom_bound - from_y) / (to_y - from_y)
+                end_x = bottom_x
+                end_y = screen_bottom_bound
+        
+        pygame.draw.line(
+            self.__transparent_surface,
+            color,
+            (begin_x, begin_y),
+            (end_x, end_y)
+        )
