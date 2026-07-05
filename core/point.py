@@ -7,7 +7,7 @@ from .general_field import GeneralField
 
 
 class Point:
-    next_name_int: int = 65
+    __next_name_int: int = 65
 
     def __init__(
             self,
@@ -23,7 +23,7 @@ class Point:
         self.color: ColorValue
 
         if name is None:
-            self.__name = chr(Point.next_name_int)
+            self.__name = chr(Point.__next_name_int)
         else:
             self.__name = name
         
