@@ -8,6 +8,7 @@ describe a geometric workspace:
   accepts every coordinate unchanged.
 - ``Shape`` is the base object for geometry built from key points.
 - ``Line`` and ``Segment`` are concrete two-point shapes.
+- ``transform`` contains helpers for converting compatible shape types.
 - ``System`` is the in-memory collection of points and shapes that represents
   the current construction.
 
@@ -15,6 +16,8 @@ The imports below form the package's public API, allowing callers to use
 ``from core import Point, Segment, System`` instead of importing each module
 directly.
 """
+
+import transform  # noqa: F401  # Re-export the transform helper package for core users.
 
 from .field import Field  # noqa: F401
 from .general_field import GeneralField  # noqa: F401
