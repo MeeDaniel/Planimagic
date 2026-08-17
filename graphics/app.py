@@ -1,10 +1,12 @@
-from typing import Union, Tuple, List, Callable
-import pygame_app as pa
-import pygame
+from collections.abc import Callable
 
-from core import System, Point, Segment, Line
-from .graphics_config import GraphicsConfig
+import pygame
+import pygame_app as pa
+
+from core import Line, Point, Segment, System
+
 from .exceptions import UnknownShapeType
+from .graphics_config import GraphicsConfig
 
 
 class App(pa.App):
@@ -13,10 +15,10 @@ class App(pa.App):
             system: System,
             workspace_update_method: Callable,
             workspace_apply_changes_method: Callable,
-            config: GraphicsConfig = GraphicsConfig(),
-            window: Union[Tuple[int, int], List[int]]=(1280, 720),
+            config: GraphicsConfig = GraphicsConfig(),  # noqa: B008
+            window: tuple[int, int] | list[int]=(1280, 720),
             tps:int=60,
-            title: Union[str, None] = None,
+            title: str | None = None,
             window_flags: int = 0
     ):
         # === Settings ===
@@ -30,7 +32,7 @@ class App(pa.App):
         self.__transparent_surface = pygame.Surface(window, pygame.SRCALPHA)
 
         # === Logic ===
-        self.__grabbed_point: Union[Point, None] = None
+        self.__grabbed_point: Point | None = None
     
     def update(self) -> None:
         self.drag_points()
@@ -53,7 +55,7 @@ class App(pa.App):
         cursor = pygame.SYSTEM_CURSOR_ARROW
 
         if self.__grabbed_point is None:
-            for name, point in self.system.get_points().items():
+            for point in self.system.get_points().values():
                 if self.is_point_hovered(point):
                     cursor = pygame.SYSTEM_CURSOR_HAND
                     if self.mouse.is_pressed[0]:
@@ -80,8 +82,8 @@ class App(pa.App):
 
     def draw_points(self) -> None:
         points = self.system.get_points()
-        for name, point in points.items():
-            x, y = point.get_pos()
+        for point in points.values():
+            _x, _y = point.get_pos()
             outer_color = pygame.Color(point.color)
             outer_color.a = 64
 
