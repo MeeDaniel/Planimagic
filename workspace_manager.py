@@ -1,11 +1,8 @@
 import importlib
-import workspace
+
+import workspace  # noqa: F401
 from core import System
 
 
-global system
-system: System
-
-
-def reload_workspace():
-    ...
+def reload_workspace(system: System):
+    importlib.import_module("workspace").apply_immediately(system)
