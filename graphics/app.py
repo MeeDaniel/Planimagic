@@ -5,6 +5,7 @@ import pygame_app as pa
 
 from core import Line, Point, Segment, System
 
+from .camera import Camera
 from .exceptions import UnknownShapeType
 from .graphics_config import GraphicsConfig
 
@@ -27,6 +28,7 @@ class App(pa.App):
         self.config = config
         self.workspace_update_method = workspace_update_method
         self.workspace_apply_changes_method = workspace_apply_changes_method
+        self.camera = Camera(0, 0, 100)
         
         # === Graphics ===
         self.__transparent_surface = pygame.Surface(window, pygame.SRCALPHA)
@@ -36,7 +38,7 @@ class App(pa.App):
     
     def update(self) -> None:
         self.drag_points()
-        self.workspace_update_method(self.system)
+        self.workspace_update_method(self.system, self)
 
     def draw(self) -> None:
         self.screen.fill(self.config.BACKGROUND_COLOR)
@@ -64,10 +66,10 @@ class App(pa.App):
         else:
             if self.mouse.is_pressed[0]:
                 cursor = pygame.SYSTEM_CURSOR_HAND
+                gx, gy = self.__grabbed_point.get_pos()
                 self.__grabbed_point.set_pos(
-                    self.__grabbed_point.get_pos()[0] + mouse_rel[0],
-                    self.__grabbed_point.get_pos()[1] + mouse_rel[1]
-                )
+                    gx + mouse_rel[0] / self.camera.scale,
+                    gy + mouse_rel[1] / self.camera.scale)
             else:
                 self.__grabbed_point = None
         
@@ -75,7 +77,8 @@ class App(pa.App):
     
     def is_point_hovered(self, point: Point) -> bool:
         mouse_pos = pygame.mouse.get_pos()
-        return (mouse_pos[0] - point.get_pos()[0]) ** 2 + (mouse_pos[1] - point.get_pos()[1]) ** 2 \
+        x, y = self.camera.unit2display(*point.get_pos(), self.screen.get_width(), self.screen.get_height())
+        return (mouse_pos[0] - x) ** 2 + (mouse_pos[1] - y) ** 2 \
                         <= self.config.POINT_OUTER_RADIUS ** 2
 
     # === Draw Rules ===
@@ -100,13 +103,13 @@ class App(pa.App):
         pygame.draw.circle(
             self.__transparent_surface,
             outer_color,
-            (x, y),
+            self.camera.unit2display(x, y, self.screen.get_width(), self.screen.get_height()),
             self.config.POINT_OUTER_RADIUS
         )
         pygame.draw.circle(
             self.__transparent_surface,
             point.color,
-            (x, y),
+            self.camera.unit2display(x, y, self.screen.get_width(), self.screen.get_height()),
             self.config.POINT_INNER_GRABBED_RADIUS
         )
 
@@ -114,7 +117,7 @@ class App(pa.App):
         pygame.draw.circle(
             self.__transparent_surface,
             point.color,
-            point.get_pos(),
+            self.camera.unit2display(*point.get_pos(), self.screen.get_width(), self.screen.get_height()),
             self.config.POINT_INNER_DEFAULT_RADIUS
         )
 
@@ -132,7 +135,12 @@ class App(pa.App):
         color = pygame.Color(segment.color)
         color.a = 128
         from_, to = segment.get_key_points()
-        pygame.draw.line(self.__transparent_surface, color, from_.get_pos(), to.get_pos())
+        pygame.draw.line(
+            self.__transparent_surface,
+            color,
+            self.camera.unit2display(*from_.get_pos(), self.screen.get_width(), self.screen.get_height()),
+            self.camera.unit2display(*to.get_pos(), self.screen.get_width(), self.screen.get_height())
+        )
 
     def draw_line(self, line: Line):
         color = pygame.Color(line.color)
@@ -141,10 +149,10 @@ class App(pa.App):
         from_x, from_y = from_.get_pos()
         to_x, to_y = to.get_pos()
 
-        screen_left_bound = 0
-        screen_right_bound = self.__transparent_surface.get_width()
-        screen_top_bound = 0
-        screen_bottom_bound = self.__transparent_surface.get_height()
+        screen_width, screen_height = self.__transparent_surface.get_size()
+        screen_left_bound, screen_top_bound = self.camera.display2unit(0, 0, screen_width, screen_height)
+        screen_right_bound, screen_bottom_bound = self.camera.display2unit(
+                                                               screen_width, screen_height, screen_width, screen_height)
 
         # Task: find BEGIN=(begin_x, begin_y) and END=(end_x, end_y) points to draw the line. These points shall lay on edges of the screen
         #
@@ -226,6 +234,6 @@ class App(pa.App):
         pygame.draw.line(
             self.__transparent_surface,
             color,
-            (begin_x, begin_y),
-            (end_x, end_y)
+            self.camera.unit2display(begin_x, begin_y, self.screen.get_width(), self.screen.get_height()),
+            self.camera.unit2display(end_x, end_y, self.screen.get_width(), self.screen.get_height())
         )
