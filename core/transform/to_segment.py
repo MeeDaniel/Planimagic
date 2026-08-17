@@ -5,15 +5,13 @@ to be represented as a finite ``Segment``. Supported conversions preserve the
 original key points and color unless a new name is provided.
 """
 
-from typing import Union
-
-from ..shape import Shape
-from ..segment import Segment
 from ..line import Line
+from ..segment import Segment
+from ..shape import Shape
 from .exceptions import CantTransformFromTo, NotAShape
 
 
-def to_segment(shape: Shape, new_name: Union[str, None] = None) -> Segment:
+def to_segment(shape: Shape, new_name: str | None = None) -> Segment:
     """Return ``shape`` represented as a ``Segment``.
 
     Args:
