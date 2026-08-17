@@ -1,12 +1,19 @@
 from graphics import App
 from core import System
-import workspace
-
-
-global system
+import workspace_manager
 
 
 system = System()
-App(system, title="Graphics Smart.")
 
 
+workspace_manager.workspace.init(system)
+
+
+app = App(
+    system,
+    workspace_manager.workspace.update,
+    workspace_manager.reload_workspace,
+    title="Graphics Smart.",
+    tps=120
+)
+app.start()
