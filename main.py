@@ -1,7 +1,6 @@
-from graphics import App
-from core import System
 import workspace_manager
-
+from core import System
+from graphics import App
 
 system = System()
 

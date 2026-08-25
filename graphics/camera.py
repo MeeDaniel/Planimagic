@@ -32,7 +32,7 @@ class Camera:
             window_height: float
     ) -> tuple[float, float]:
         return (
-            (object_x - window_width / 2) / self.scale - self.x,
-            (object_y - window_height / 2) / self.scale - self.y,
+            (object_x - window_width / 2) / self.scale + self.x,
+            (object_y - window_height / 2) / self.scale + self.y,
         )
     

@@ -38,6 +38,7 @@ class App(pa.App):
     
     def update(self) -> None:
         self.drag_points()
+        self.camera_zoom()
         self.workspace_update_method(self.system, self)
 
     def draw(self) -> None:
@@ -63,6 +64,12 @@ class App(pa.App):
                     if self.mouse.is_pressed[0]:
                         self.__grabbed_point = point
                     break
+
+            # WARN: Three lines below implements logic absolutely unrelated to point dragging. It should be moved to
+            #       other method or the logic of this method should be completely refactored.
+            if self.mouse.is_pressed[0]:
+                self.camera.x -= mouse_rel[0] / self.camera.scale
+                self.camera.y -= mouse_rel[1] / self.camera.scale
         else:
             if self.mouse.is_pressed[0]:
                 cursor = pygame.SYSTEM_CURSOR_HAND
@@ -74,6 +81,13 @@ class App(pa.App):
                 self.__grabbed_point = None
         
         pygame.mouse.set_cursor(cursor)
+
+    def camera_zoom(self) -> None:
+        scale = 1.5 if self.key.pressed[pygame.K_LSHIFT] else 1.2
+
+        for event in self.events:
+            if event.type == pygame.MOUSEWHEEL:
+                self.camera.scale *= scale ** event.y
     
     def is_point_hovered(self, point: Point) -> bool:
         mouse_pos = pygame.mouse.get_pos()
