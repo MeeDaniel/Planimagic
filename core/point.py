@@ -5,15 +5,16 @@ coordinates that are validated by a ``Field``. A point can be moved with
 ``set_pos()``, read with ``get_pos()``, and identified with ``get_name()``.
 """
 
-from typing import Tuple, Union
-from util.definitions import ColorValue
 from pygame.color import Color
+
+from algorithms import DirectedGraphVertex
+from util.definitions import ColorValue
 
 from .field import Field
 from .general_field import GeneralField
 
 
-class Point:
+class Point(DirectedGraphVertex):
     """A named coordinate pair that belongs to an optional field.
 
     ``Point`` is the basic geometric object used by shapes and systems. Its
@@ -33,9 +34,9 @@ class Point:
             self,
             x: float,
             y: float,
-            name: Union[str, None] = None,
-            color: Union[ColorValue, None] = None,
-            field: Union[Field, None] = GeneralField()
+            name: str | None = None,
+            color: ColorValue | None = None,
+            field: Field | None = GeneralField()
         ):
         """Create a point at ``(x, y)``.
 
@@ -47,6 +48,8 @@ class Point:
             field: Optional field that constrains the stored position. Defaults
                 to ``GeneralField``, which accepts every coordinate.
         """
+
+        super().__init__(value=self) # wdym by value is self???
 
         self.__x: float = x
         """Developer note: stored x-coordinate after field adjustment."""
@@ -68,7 +71,7 @@ class Point:
         else:
             self.color = color
 
-        self.field: Union[Field, None] = field
+        self.field: Field | None = field
         """Field that projects requested coordinates onto allowed positions."""
 
         self.set_pos(*self.get_pos())  # Re-apply the initial coordinates through the field.
@@ -84,7 +87,7 @@ class Point:
         if self.field is not None:
             self.__x, self.__y = self.field.nearest_point(x, y)
     
-    def get_pos(self) -> Tuple[float, float]:
+    def get_pos(self) -> tuple[float, float]:
         """Return the current ``(x, y)`` coordinates."""
 
         return (self.__x, self.__y)

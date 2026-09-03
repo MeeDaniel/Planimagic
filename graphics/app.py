@@ -38,6 +38,7 @@ class App(pa.App):
     
     def update(self) -> None:
         self.drag_points()
+        self.system.update_rules()
         self.camera_zoom()
         self.workspace_update_method(self.system, self)
 

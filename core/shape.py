@@ -5,14 +5,15 @@ It stores a display name, display color, and the points that define the shape.
 Concrete subclasses decide what those key points mean geometrically.
 """
 
-from typing import List, Union
-from util.definitions import ColorValue
 from pygame import Color
+
+from algorithms import DirectedGraphVertex
+from util.definitions import ColorValue
 
 from .point import Point
 
 
-class Shape:
+class Shape(DirectedGraphVertex):
     """Base class for named, colored geometry built from key points.
 
     Subclasses should pass their defining points to this class and expose any
@@ -24,9 +25,9 @@ class Shape:
 
     def __init__(
             self,
-            key_points: List[Point],
-            name: Union[str, None] = None,
-            color: Union[ColorValue, None] = None,
+            key_points: list[Point],
+            name: str | None = None,
+            color: ColorValue | None = None,
         ):
         """Create a shape from its defining points.
 
@@ -35,6 +36,8 @@ class Shape:
             name: Optional shape name. If omitted, a ``shape_N`` name is used.
             color: Optional display color. Defaults to white.
         """
+
+        super().__init__(value=self) # wdym by value is self???
 
         self.__name: str
         """Developer note: stable shape name used by ``System`` as a key."""
@@ -53,10 +56,10 @@ class Shape:
         else:
             self.color = color
 
-        self.__key_points: List[Point] = key_points
+        self.__key_points: list[Point] = key_points
         """Developer note: defining point objects, stored in constructor order."""
     
-    def get_key_points(self) -> List[Point]:
+    def get_key_points(self) -> list[Point]:
         """Return a copy of the points that define the shape."""
 
         # Return a shallow copy so callers cannot reorder the shape's internals.
