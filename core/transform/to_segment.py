@@ -5,9 +5,9 @@ to be represented as a finite ``Segment``. Supported conversions preserve the
 original key points and color unless a new name is provided.
 """
 
+from ..shape import Shape
 from ..shapes.line import Line
 from ..shapes.segment import Segment
-from ..shape import Shape
 from .exceptions import CantTransformFromTo, NotAShape
 
 
