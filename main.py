@@ -12,7 +12,6 @@ app = App(
     system,
     workspace_manager.workspace.update,
     workspace_manager.reload_workspace,
-    title="Graphics Smart.",
-    tps=120
+    title="Planimagic."
 )
 app.start()
