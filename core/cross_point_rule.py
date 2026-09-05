@@ -18,10 +18,16 @@ class RatioRule(Rule):
 
         line1: Line = dependencies[0] # type: ignore
         line2: Line = dependencies[1] # type: ignore
+        A, B = line1.get_key_points()
+        C, D = line2.get_key_points()
+        x1, y1 = A.get_pos()
+        x2, y2 = B.get_pos()
+        x3, y3 = C.get_pos()
+        x4, y4 = D.get_pos()
 
-        # TODO: to do
-        raise NotImplementedError()
+        t = ((x3 - x1) * (y4 - y3) + (x4 - x3) * (y1 - y3)) / ((x2 - x1) * (y4 - y3) - (x4 - x3) * (y2 - y1))
+        ax = x1 + (x2 - x1) * t
+        ay = y1 + (y2 - y1) * t
 
-        ax, ay = 0, 0
         affects: Point = self.get_affects()[0] # type: ignore
         affects.set_pos(ax, ay)
