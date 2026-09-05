@@ -5,15 +5,13 @@ It satisfies the ``Field`` interface by returning requested coordinates without
 modification.
 """
 
-from typing import Tuple
-
-from .field import Field
+from ..field import Field
 
 
 class GeneralField(Field):
     """A field that accepts every requested point position."""
 
-    def nearest_point(self, initial_x: float, initial_y: float) -> Tuple[float, float]:
+    def nearest_point(self, initial_x: float, initial_y: float) -> tuple[float, float]:
         """Return ``(initial_x, initial_y)`` unchanged."""
 
         return (initial_x, initial_y)

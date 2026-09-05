@@ -5,11 +5,10 @@ The segment exposes its endpoints through ``Shape.get_key_points()`` and can
 interpolate positions along the segment with ``get_pos_by_proportion()``.
 """
 
-from typing import Union, Tuple
 from util.definitions import ColorValue
 
-from ..shape import Shape
 from ..point import Point
+from ..shape import Shape
 
 
 class Segment(Shape):
@@ -19,8 +18,8 @@ class Segment(Shape):
             self,
             from_: Point,
             to: Point,
-            name: Union[str, None] = None,
-            color: Union[ColorValue, None] = None
+            name: str | None = None,
+            color: ColorValue | None = None
         ):
         """Create a segment from two endpoint points.
 
@@ -34,7 +33,7 @@ class Segment(Shape):
         # Shape owns common naming, coloring, and endpoint storage behavior.
         super().__init__([from_, to], name, color)
     
-    def get_pos_by_proportion(self, proportion: float) -> Tuple[float, float]:
+    def get_pos_by_proportion(self, proportion: float) -> tuple[float, float]:
         """Return a point along the segment.
 
         Args:

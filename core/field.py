@@ -5,9 +5,6 @@ allowed to be placed. A field receives a requested coordinate and returns the
 nearest coordinate that belongs to the allowed area.
 """
 
-from typing import Tuple
-
-
 class Field:
     """Base interface for point placement constraints.
 
@@ -15,7 +12,7 @@ class Field:
     the closest coordinate they allow.
     """
 
-    def nearest_point(self, initial_x: float, initial_y: float) -> Tuple[float, float]:
+    def nearest_point(self, initial_x: float, initial_y: float) -> tuple[float, float]:
         """Return the allowed coordinate nearest to ``(initial_x, initial_y)``.
 
         Args:
