@@ -5,15 +5,13 @@ be represented as a ``Line``. Supported conversions preserve the original key
 points and color unless a new name is provided.
 """
 
-from typing import Union
-
 from ..shape import Shape
-from ..segment import Segment
-from ..line import Line
+from ..shapes.line import Line
+from ..shapes.segment import Segment
 from .exceptions import CantTransformFromTo, NotAShape
 
 
-def to_line(shape: Shape, new_name: Union[str, None] = None) -> Line:
+def to_line(shape: Shape, new_name: str | None = None) -> Line:
     """Return ``shape`` represented as a ``Line``.
 
     Args:

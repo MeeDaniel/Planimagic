@@ -1,9 +1,9 @@
-from .line import Line
-from .point import Point
-from .rule import Rule
+from ..point import Point
+from ..rule import Rule
+from ..shapes.line import Line
 
 
-class RatioRule(Rule):
+class CrossPointRule(Rule):
     def __init__(
             self,
             name: str,

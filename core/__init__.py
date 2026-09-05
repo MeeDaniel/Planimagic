@@ -17,13 +17,11 @@ directly.
 """
 
 from .field import Field  # noqa: F401
-from .general_field import GeneralField  # noqa: F401
-from .height_rule import HeightRule  #noqa: F401
-from .line import Line  # noqa: F401
+from .fields import *
 from .point import Point  # noqa: F401
-from .ratio_rule import RatioRule  #noqa: F401
 from .rule import Rule  # noqa: F401
-from .segment import Segment  # noqa: F401
+from .rules import *
 from .shape import Shape  # noqa: F401
+from .shapes import *
 from .system import System  # noqa: F401
 from .system_unit import SystemUnit  # noqa: F401

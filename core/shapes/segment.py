@@ -8,8 +8,8 @@ interpolate positions along the segment with ``get_pos_by_proportion()``.
 from typing import Union, Tuple
 from util.definitions import ColorValue
 
-from .shape import Shape
-from .point import Point
+from ..shape import Shape
+from ..point import Point
 
 
 class Segment(Shape):

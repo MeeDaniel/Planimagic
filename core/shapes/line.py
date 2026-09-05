@@ -7,8 +7,8 @@ rendering or geometry code can treat it like other shapes.
 
 from util.definitions import ColorValue
 
-from .point import Point
-from .shape import Shape
+from ..point import Point
+from ..shape import Shape
 
 
 class Line(Shape):

@@ -10,7 +10,7 @@ from pygame.color import Color
 from util.definitions import ColorValue
 
 from .field import Field
-from .general_field import GeneralField
+from .fields.general_field import GeneralField
 from .system_unit import SystemUnit
 
 

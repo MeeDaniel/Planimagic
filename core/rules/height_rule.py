@@ -1,6 +1,6 @@
-from .line import Line
-from .point import Point
-from .rule import Rule
+from ..shapes.line import Line
+from ..point import Point
+from ..rule import Rule
 
 
 class HeightRule(Rule):

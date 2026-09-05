@@ -1,6 +1,6 @@
-from .point import Point
-from .rule import Rule
-from .segment import Segment
+from ..point import Point
+from ..rule import Rule
+from ..shapes.segment import Segment
 
 
 class RatioRule(Rule):
