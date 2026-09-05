@@ -1,41 +1,21 @@
-from algorithms import DirectedGraphVertex
-
 from .point import Point
+from .system_unit import SystemUnit
 
 
-class Rule(DirectedGraphVertex):
-    __next_rule_index = 65
-    """next numeric suffix for auto-generated shape names."""
-
+class Rule(SystemUnit):
     def __init__(
             self,
-            name: str,
-            dependencies: list[DirectedGraphVertex],
+            name: str | None,
+            dependencies: list[SystemUnit],
             affects: list[Point]
     ):
 
-        super().__init__(value=self) # wdym by value is self???
-
-        self.__name: str
-        """Stable rule name used by ``System`` as a key."""
-        
-        if name is None:
-            self.__name = "rule_" + str(Rule.__next_rule_index)
-            # Increment only after the current index has been used in the name.
-            Rule.__next_rule_index += 1
-        else:
-            self.__name = name
+        super().__init__(name)
         
         self.__dependencies = dependencies
         self.__affects = affects
-
-    def update(self) -> None:
-        raise NotImplementedError()
-
-    def get_name(self) -> str:
-        return self.__name
-
-    def get_dependencies(self) -> list[DirectedGraphVertex]:
+    
+    def get_dependencies(self) -> list[SystemUnit]:
         return self.__dependencies
 
     def get_affects(self) -> list[Point]:

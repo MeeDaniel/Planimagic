@@ -13,7 +13,7 @@ class HeightRule(Rule):
     ):
         super().__init__(name, [from_point, line], [affects])
 
-    def update(self):
+    def update(self, *args, **kwargs):
         dependencies = self.get_dependencies()
 
         from_point: Point = dependencies[0] # type: ignore

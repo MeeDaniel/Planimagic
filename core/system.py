@@ -10,6 +10,7 @@ from algorithms import DirectedAcyclicGraph, topological_sort
 from .point import Point
 from .rule import Rule
 from .shape import Shape
+from .system_unit import SystemUnit
 
 
 class System(DirectedAcyclicGraph):
@@ -26,7 +27,7 @@ class System(DirectedAcyclicGraph):
         """Developer note: shape registry keyed by ``Shape.get_name()``."""
         self.__rules: dict[str, Rule] = {}
         """Rule registry keyed by ``Rule.get_name()``."""
-        self.__topo_order: list[Rule] = []
+        self.__topo_order: list[SystemUnit] = []
         """The order in which rules should be updated"""
 
     def add_point(self, point: Point):
@@ -144,13 +145,11 @@ class System(DirectedAcyclicGraph):
 
         self.__update_topo()
 
-    def update_rules(self):
-        for rule in self.__topo_order:
-            rule.update()
+    def update(self):
+        for unit in self.__topo_order:
+            unit.activate() # TODO: Is it really works correctly? Check it please
+            unit.update()
+            unit.gain_inactivity()
 
     def __update_topo(self):
-        self.__topo_order.clear()
-        order = topological_sort(self)
-        for v in order:
-            if isinstance(v, Rule):
-                self.__topo_order.append(v)
+        self.__topo_order = topological_sort(self)

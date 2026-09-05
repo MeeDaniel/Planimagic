@@ -18,12 +18,11 @@ class App(pa.App):
             workspace_apply_changes_method: Callable,
             config: GraphicsConfig = GraphicsConfig(),  # noqa: B008
             window: tuple[int, int] | list[int]=(1280, 720),
-            tps:int=60,
             title: str | None = None,
             window_flags: int = 0
     ):
         # === Settings ===
-        super().__init__(window, tps, title, window_flags | pygame.SRCALPHA)
+        super().__init__(window, config.TPS, title, window_flags | pygame.SRCALPHA)
         self.system = system
         self.config = config
         self.workspace_update_method = workspace_update_method
@@ -31,14 +30,16 @@ class App(pa.App):
         self.camera = Camera(0, 0, 100)
         
         # === Graphics ===
+        pygame.init()
         self.__transparent_surface = pygame.Surface(window, pygame.SRCALPHA)
+        self.__label_font = pygame.font.SysFont(self.config.LABEL_FONTNAME, self.config.LABEL_FONTSIZE)
 
         # === Logic ===
         self.__grabbed_point: Point | None = None
     
     def update(self) -> None:
         self.drag_points()
-        self.system.update_rules()
+        self.system.update()
         self.camera_zoom()
         self.workspace_update_method(self.system, self)
 
@@ -112,29 +113,56 @@ class App(pa.App):
 
     def draw_grabbed_point(self, point: Point) -> None:
         x, y = point.get_pos()
-        outer_color = pygame.Color(point.color)
-        outer_color.a = 64
+        screen_x, screen_y = self.camera.unit2display(x, y, self.screen.get_width(), self.screen.get_height())
+
+        color = pygame.Color(point.color)
+        if not point.is_active():
+            color.a //= 4
+
+        outer_color = pygame.Color(color)
+        outer_color.a //= 4
 
         pygame.draw.circle(
             self.__transparent_surface,
             outer_color,
-            self.camera.unit2display(x, y, self.screen.get_width(), self.screen.get_height()),
+            (screen_x, screen_y),
             self.config.POINT_OUTER_RADIUS
         )
         pygame.draw.circle(
             self.__transparent_surface,
-            point.color,
-            self.camera.unit2display(x, y, self.screen.get_width(), self.screen.get_height()),
+            color,
+            (screen_x, screen_y),
             self.config.POINT_INNER_GRABBED_RADIUS
         )
 
+        label_surface = self.__label_font.render(point.get_label(), self.config.LABEL_ANTIALIAS, color)
+
+        # TODO: make better alignment
+        label_rect = label_surface.get_rect(centerx=screen_x, bottom=screen_y-self.config.POINT_LABEL_OFFSET)
+
+        self.__transparent_surface.blit(label_surface, label_rect)
+
     def draw_default_point(self, point: Point) -> None:
+        x, y = point.get_pos()
+        screen_x, screen_y = self.camera.unit2display(x, y, self.screen.get_width(), self.screen.get_height())
+
+        color = pygame.Color(point.color)
+        if not point.is_active():
+            color.a //= 4
+
         pygame.draw.circle(
             self.__transparent_surface,
-            point.color,
-            self.camera.unit2display(*point.get_pos(), self.screen.get_width(), self.screen.get_height()),
+            color,
+            (screen_x, screen_y),
             self.config.POINT_INNER_DEFAULT_RADIUS
         )
+
+        label_surface = self.__label_font.render(point.get_label(), self.config.LABEL_ANTIALIAS, color)
+
+        # TODO: make better alignment
+        label_rect = label_surface.get_rect(centerx=screen_x, bottom=screen_y-self.config.POINT_LABEL_OFFSET)
+
+        self.__transparent_surface.blit(label_surface, label_rect)
 
     def draw_shapes(self) -> None:
         shapes = self.system.get_shapes()
@@ -149,6 +177,10 @@ class App(pa.App):
     def draw_segment(self, segment: Segment):
         color = pygame.Color(segment.color)
         color.a = 128
+
+        if not segment.is_active():
+            color.a //= 4
+
         from_, to = segment.get_key_points()
         pygame.draw.line(
             self.__transparent_surface,
@@ -160,6 +192,10 @@ class App(pa.App):
     def draw_line(self, line: Line):
         color = pygame.Color(line.color)
         color.a = 128
+
+        if not line.is_active():
+            color.a //= 4
+        
         from_, to = line.get_key_points()
         from_x, from_y = from_.get_pos()
         to_x, to_y = to.get_pos()

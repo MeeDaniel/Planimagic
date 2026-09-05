@@ -7,27 +7,19 @@ coordinates that are validated by a ``Field``. A point can be moved with
 
 from pygame.color import Color
 
-from algorithms import DirectedGraphVertex
 from util.definitions import ColorValue
 
 from .field import Field
 from .general_field import GeneralField
+from .system_unit import SystemUnit
 
 
-class Point(DirectedGraphVertex):
+class Point(SystemUnit):
     """A named coordinate pair that belongs to an optional field.
 
     ``Point`` is the basic geometric object used by shapes and systems. Its
     stored coordinates are adjusted through its field, so callers can attach a
     custom ``Field`` to constrain where the point may be placed.
-    """
-
-    __next_name_int: int = 65
-    """Developer note: ASCII code used for generated point names.
-
-    The current implementation reads this value when ``name`` is omitted. It is
-    kept private because generated-name policy is an implementation detail of
-    ``Point`` rather than part of the public API.
     """
 
     def __init__(
@@ -36,6 +28,7 @@ class Point(DirectedGraphVertex):
             y: float,
             name: str | None = None,
             color: ColorValue | None = None,
+            label: str | None = None,
             field: Field | None = GeneralField()
         ):
         """Create a point at ``(x, y)``.
@@ -49,22 +42,16 @@ class Point(DirectedGraphVertex):
                 to ``GeneralField``, which accepts every coordinate.
         """
 
-        super().__init__(value=self) # wdym by value is self???
+        super().__init__(name)
 
         self.__x: float = x
         """Developer note: stored x-coordinate after field adjustment."""
         self.__y: float = y
         """Developer note: stored y-coordinate after field adjustment."""
-        self.__name: str
-        """Developer note: point name used by ``System`` as the dictionary key."""
         self.color: ColorValue
         """Display color used by rendering code that consumes core points."""
-
-        if name is None:
-            # ASCII 65 is "A", which is the first generated point label.
-            self.__name = chr(Point.__next_name_int)
-        else:
-            self.__name = name
+        self.__label: str | None = label
+        """Display name. If None, 'name' is used"""
         
         if color is None:
             self.color = Color("white")
@@ -91,11 +78,17 @@ class Point(DirectedGraphVertex):
         """Return the current ``(x, y)`` coordinates."""
 
         return (self.__x, self.__y)
-    
-    def get_name(self) -> str:
-        """Return the point name."""
 
-        return self.__name
+    def get_label(self) -> str:
+        if self.__label is None:
+            return self.get_name()
+        return self.__label
+
+    def set_label(self, label: str | None):
+        self.__label = label
+
+    def update(self, *args, **kwargs):
+        ...
 
     def __str__(self) -> str:
         """Return the readable representation used by ``str(point)``."""
@@ -105,4 +98,4 @@ class Point(DirectedGraphVertex):
     def __repr__(self) -> str:
         """Return a developer-friendly representation of the point."""
 
-        return f"{self.__class__.__name__}.{self.__name}(x={self.__x}, y={self.__y})"
+        return f"{self.__class__.__name__}.{self.get_name()}(x={self.__x}, y={self.__y})"

@@ -26,3 +26,4 @@ from .rule import Rule  # noqa: F401
 from .segment import Segment  # noqa: F401
 from .shape import Shape  # noqa: F401
 from .system import System  # noqa: F401
+from .system_unit import SystemUnit  # noqa: F401

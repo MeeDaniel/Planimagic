@@ -13,7 +13,7 @@ class RatioRule(Rule):
     ):
         super().__init__(name, [line1, line2], [affects])
 
-    def update(self):
+    def update(self, *args, **kwargs):
         dependencies = self.get_dependencies()
 
         line1: Line = dependencies[0] # type: ignore
