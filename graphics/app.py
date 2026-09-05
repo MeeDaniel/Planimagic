@@ -14,8 +14,8 @@ class App(pa.App):
     def __init__(
             self,
             system: System,
-            workspace_update_method: Callable,
-            workspace_apply_changes_method: Callable,
+            workspace_update_method: Callable[[System, "App"], None],
+            workspace_apply_changes_method: Callable[[System, "App"], None],
             config: GraphicsConfig = GraphicsConfig(),  # noqa: B008
             window: tuple[int, int] | list[int]=(1280, 720),
             title: str | None = None,

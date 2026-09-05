@@ -1,5 +1,9 @@
+import time
+
 from core import Field, HeightRule, Line, Point, RatioRule, Segment, System
 from graphics import App
+
+t = time.time()
 
 
 class HorizontalLineField(Field):
@@ -42,6 +46,12 @@ def init(system: System):
 def update(system: System, app: App):
     """This function calls every program tick
     """
+    global t
+    current_time = time.time()
+    diff = current_time - t
+    tps = 1 / diff
+    print(f"{diff=:.6f} {tps=:.2f}")
+    t = current_time
 
 def apply_immediately(system: System, app: App):
     """This function calls when user call it during the program run
