@@ -4,7 +4,7 @@ from dataclasses import dataclass
 @dataclass
 class GraphicsConfig:
     # === General ===
-    TPS = 120
+    TPS = 60
     
     # === Sizes ===
     POINT_INNER_DEFAULT_RADIUS = 7
