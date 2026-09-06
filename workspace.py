@@ -5,6 +5,7 @@ from core import (
     LockOnLineRule,
     Point,
     RatioRule,
+    Ray,
     Segment,
     System,
 )
@@ -24,10 +25,12 @@ def init(system: System):
     G = Point( 3,  3, name="G", color="#eadb3a")
     H = Point(        name="H", color="#ff8000")
     I = Point(        name="I", color="#0b5bbd")
+    J = Point(        name="J", color="#0b5bbd")
 
     yline =  Line(F, G, name="yline", color="#eadb3a")
     seg = Segment(A, B, name="seg")
     line =   Line(C, D, name="line",  color="#ffffff")
+    Ray(I, J, name="ray",   color="#52a0ff")
 
     LockOnLineRule(None, A, yline)
     RatioRule(None, seg, 1/3, C)

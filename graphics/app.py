@@ -3,7 +3,7 @@ from collections.abc import Callable
 import pygame
 import pygame_app as pa
 
-from core import Line, Point, Segment, System
+from core import Line, Point, Ray, Segment, System
 
 from .camera import Camera
 from .exceptions import UnknownShapeType
@@ -171,6 +171,8 @@ class App(pa.App):
                 self.draw_segment(shape)
             elif isinstance(shape, Line):
                 self.draw_line(shape)
+            elif isinstance(shape, Ray):
+                self.draw_ray(shape)
             else:
                 raise UnknownShapeType(name)
     
@@ -282,6 +284,95 @@ class App(pa.App):
                 end_x = bottom_x
                 end_y = screen_bottom_bound
         
+        pygame.draw.line(
+            self.__transparent_surface,
+            color,
+            self.camera.unit2display(begin_x, begin_y, self.screen.get_width(), self.screen.get_height()),
+            self.camera.unit2display(end_x, end_y, self.screen.get_width(), self.screen.get_height())
+        )
+
+    def draw_ray(self, ray: Ray):
+        color = pygame.Color(ray.color)
+        color.a = 128
+
+        if not ray.is_active():
+            color.a //= 4
+        
+        from_, to = ray.get_key_points()
+        from_x, from_y = from_.get_pos()
+        to_x, to_y = to.get_pos()
+
+        screen_width, screen_height = self.__transparent_surface.get_size()
+        screen_left_bound, screen_top_bound = self.camera.display2unit(0, 0, screen_width, screen_height)
+        screen_right_bound, screen_bottom_bound = self.camera.display2unit(
+                                                               screen_width, screen_height, screen_width, screen_height)
+
+        # The solution is the same for line drawing problem
+
+        begin_x, begin_y = None, None
+        end_x, end_y = None, None
+
+        if (from_y == to_y): # Edge case: line is horizontal
+            begin_x, begin_y = screen_left_bound, from_y
+            end_x, end_y = screen_right_bound, to_y
+
+            if from_x < to_x:
+                begin_x = from_x
+                begin_y = from_y
+            else:
+                end_x = from_x
+                end_y = from_y
+        
+        elif (from_x == to_x): # Edge case: line is vertical
+            begin_x, begin_y = from_x, screen_top_bound
+            end_x, end_y = to_x, screen_bottom_bound
+
+            if from_y < to_y:
+                begin_x = from_x
+                begin_y = from_y
+            else:
+                end_x = from_x
+                end_y = from_y
+        
+        else:
+            left_y = from_y + (to_y - from_y) * (screen_left_bound - from_x) / (to_x - from_x)
+            right_y = from_y + (to_y - from_y) * (screen_right_bound - from_x) / (to_x - from_x)
+
+            if (left_y < screen_top_bound and right_y < screen_top_bound) or \
+                    (left_y > screen_bottom_bound and right_y > screen_bottom_bound):
+                return # No need to draw
+
+            if screen_top_bound <= left_y <= screen_bottom_bound:
+                begin_x = screen_left_bound
+                begin_y = left_y
+            elif left_y < screen_top_bound:
+                top_x = from_x + (to_x - from_x) * (screen_top_bound - from_y) / (to_y - from_y)
+                begin_x = top_x
+                begin_y = screen_top_bound
+            else:
+                bottom_x = from_x + (to_x - from_x) * (screen_bottom_bound - from_y) / (to_y - from_y)
+                begin_x = bottom_x
+                begin_y = screen_bottom_bound
+            
+            if screen_top_bound <= right_y <= screen_bottom_bound:
+                end_x = screen_right_bound
+                end_y = right_y
+            elif right_y < screen_top_bound:
+                top_x = from_x + (to_x - from_x) * (screen_top_bound - from_y) / (to_y - from_y)
+                end_x = top_x
+                end_y = screen_top_bound
+            else:
+                bottom_x = from_x + (to_x - from_x) * (screen_bottom_bound - from_y) / (to_y - from_y)
+                end_x = bottom_x
+                end_y = screen_bottom_bound
+
+            if from_x < to_x:
+                begin_x = from_x
+                begin_y = from_y
+            else:
+                end_x = from_x
+                end_y = from_y
+
         pygame.draw.line(
             self.__transparent_surface,
             color,
