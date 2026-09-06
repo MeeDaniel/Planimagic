@@ -25,7 +25,8 @@ class Shape(SystemUnit):
             key_points: list[Point],
             name: str | None = None,
             color: ColorValue | None = None,
-            label: str | None = None
+            label: str | None = None,
+            avoid_system: bool = False
         ):
         """Create a shape from its defining points.
 
@@ -33,6 +34,8 @@ class Shape(SystemUnit):
             key_points: Points that define the shape.
             name: Optional shape name. If omitted, a ``shape_N`` name is used.
             color: Optional display color. Defaults to white.
+            label: Optional point label. If omitted, point name is used.
+            avoid_system: Optional checkbox. If on - point will not be added to the system.
         """
 
         super().__init__(name)
@@ -50,7 +53,8 @@ class Shape(SystemUnit):
         self.__key_points: list[Point] = key_points
         """Developer note: defining point objects, stored in constructor order."""
 
-        SystemUnit._system.add_shape(self)
+        if not avoid_system:
+            SystemUnit._system.add_shape(self)
     
     def get_key_points(self) -> list[Point]:
         """Return a copy of the points that define the shape."""

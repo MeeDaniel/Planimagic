@@ -7,7 +7,8 @@ class Rule(SystemUnit):
             self,
             name: str | None,
             dependencies: list[SystemUnit],
-            affects: list[Point]
+            affects: list[Point],
+            avoid_system: bool = False
     ):
 
         super().__init__(name)
@@ -15,7 +16,8 @@ class Rule(SystemUnit):
         self.__dependencies = dependencies
         self.__affects = affects
 
-        SystemUnit._system.add_rule(self)
+        if not avoid_system:
+            SystemUnit._system.add_rule(self)
     
     def get_dependencies(self) -> list[SystemUnit]:
         return self.__dependencies

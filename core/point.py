@@ -25,6 +25,7 @@ class Point(SystemUnit):
             name: str | None = None,
             color: ColorValue | None = None,
             label: str | None = None,
+            avoid_system: bool = False
         ):
         """Create a point at ``(x, y)``.
 
@@ -33,6 +34,8 @@ class Point(SystemUnit):
             y: Requested y-coordinate.
             name: Optional point name. If omitted, a generated name is used.
             color: Optional display color. Defaults to white.
+            label: Optional point label. If omitted, point name is used.
+            avoid_system: Optional checkbox. If on - point will not be added to the system.
         """
 
         super().__init__(name)
@@ -51,7 +54,8 @@ class Point(SystemUnit):
         else:
             self.color = color
 
-        SystemUnit._system.add_point(self)
+        if not avoid_system:
+            SystemUnit._system.add_point(self)
     
     def set_pos(self, x: float, y: float):
         """Move the point to the nearest field-approved position.

@@ -8,9 +8,10 @@ class LockOnLineRule(Rule):
             self,
             name: str | None,
             point: Point,
-            line: Line
+            line: Line,
+            avoid_system: bool = False
     ):
-        super().__init__(name, [line], [point])
+        super().__init__(name, [line], [point], avoid_system)
 
     def update(self, *args, **kwargs):
         line: Line = self.get_dependencies()[0] # type: ignore

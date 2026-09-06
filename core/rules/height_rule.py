@@ -9,9 +9,10 @@ class HeightRule(Rule):
             name: str | None,
             from_point: Point,
             line: Line,
-            affects: Point
+            affects: Point,
+            avoid_system: bool = False
     ):
-        super().__init__(name, [from_point, line], [affects])
+        super().__init__(name, [from_point, line], [affects], avoid_system)
 
     def update(self, *args, **kwargs):
         dependencies = self.get_dependencies()

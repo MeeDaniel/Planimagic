@@ -9,9 +9,10 @@ class CrossPointRule(Rule):
             name: str | None,
             line1: Line,
             line2: Line,
-            affects: Point
+            affects: Point,
+            avoid_system: bool = False
     ):
-        super().__init__(name, [line1, line2], [affects])
+        super().__init__(name, [line1, line2], [affects], avoid_system)
 
     def update(self, *args, **kwargs):
         dependencies = self.get_dependencies()

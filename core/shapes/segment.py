@@ -19,7 +19,9 @@ class Segment(Shape):
             from_: Point,
             to: Point,
             name: str | None = None,
-            color: ColorValue | None = None
+            color: ColorValue | None = None,
+            label: str | None = None,
+            avoid_system: bool = False
         ):
         """Create a segment from two endpoint points.
 
@@ -28,10 +30,12 @@ class Segment(Shape):
             to: Segment end point.
             name: Optional shape name. If omitted, ``Shape`` generates one.
             color: Optional display color. Defaults to white.
+            label: Optional point label. If omitted, point name is used.
+            avoid_system: Optional checkbox. If on - point will not be added to the system.
         """
 
         # Shape owns common naming, coloring, and endpoint storage behavior.
-        super().__init__([from_, to], name, color)
+        super().__init__([from_, to], name, color, label, avoid_system)
     
     def get_pos_by_proportion(self, proportion: float) -> tuple[float, float]:
         """Return a point along the segment.

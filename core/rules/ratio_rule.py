@@ -9,9 +9,10 @@ class RatioRule(Rule):
             name: str | None,
             segment: Segment,
             ratio: float,
-            affects: Point
+            affects: Point,
+            avoid_system: bool = False
     ):
-        super().__init__(name, [segment], [affects])
+        super().__init__(name, [segment], [affects], avoid_system)
         self.ratio = ratio
 
     def update(self, *args, **kwargs):

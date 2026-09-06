@@ -19,7 +19,9 @@ class Line(Shape):
             from_: Point,
             to: Point,
             name: str | None = None,
-            color: ColorValue | None = None
+            color: ColorValue | None = None,
+            label: str | None = None,
+            avoid_system: bool = False
         ):
         """Create a line from two key points.
 
@@ -28,10 +30,12 @@ class Line(Shape):
             to: Second point that defines the line.
             name: Optional shape name. If omitted, ``Shape`` generates one.
             color: Optional display color. Defaults to white.
+            label: Optional point label. If omitted, point name is used.
+            avoid_system: Optional checkbox. If on - point will not be added to the system.
         """
 
         # Shape owns common naming, coloring, and key-point storage behavior.
-        super().__init__([from_, to], name, color)
+        super().__init__([from_, to], name, color, label, avoid_system)
 
     def dist_to_point_sq(self, point: Point):
         from_, to = self.get_key_points()
