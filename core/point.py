@@ -20,8 +20,8 @@ class Point(SystemUnit):
 
     def __init__(
             self,
-            x: float,
-            y: float,
+            x: float = 0,
+            y: float = 0,
             name: str | None = None,
             color: ColorValue | None = None,
             label: str | None = None,

@@ -1,4 +1,5 @@
 from core import (
+    CrossPointRule,
     HeightRule,
     Line,
     LockOnLineRule,
@@ -14,22 +15,24 @@ def init(system: System):
     """This function calls immediately program starts
     """
 
-    A = Point(3-4, 1-4, name="A", color="#eadb3a")
-    B = Point(5-4, 1-4, name="B", color="#ffffff")
-    C = Point(0-4, 0-4, name="C", color="#6cec59")
-    D = Point(6-4, 6-4, name="D", color="#ffffff")
-    E = Point(5-4, 5-4, name="E", color="#ff0000")
-    F = Point( -3,   3, name="F", color="#eadb3a")
-    G = Point(  3,   3, name="G", color="#eadb3a")
-    H = Point(5-4, 5-4, name="H", color="#ff8000")
+    A = Point(-1,     name="A", color="#eadb3a")
+    B = Point( 1, -3, name="B", color="#ffffff")
+    C = Point(        name="C", color="#6cec59")
+    D = Point( 2,  2, name="D", color="#ffffff")
+    E = Point( 1,  1, name="E", color="#ff0000")
+    F = Point(-3,  3, name="F", color="#eadb3a")
+    G = Point( 3,  3, name="G", color="#eadb3a")
+    H = Point(        name="H", color="#ff8000")
+    I = Point(        name="I", color="#0b5bbd")
 
-    yline = Line(F, G, name="yline", color="#eadb3a")
+    yline =  Line(F, G, name="yline", color="#eadb3a")
     seg = Segment(A, B, name="seg")
-    line = Line(C, D, name="line", color="#ffffff")
+    line =   Line(C, D, name="line",  color="#ffffff")
 
-    A_lock_on_yline = LockOnLineRule("A_lock_on_line", A, yline)
-    one_third_rule = RatioRule("one_third", seg, 1/3, C)
-    height_rule = HeightRule("height", E, line, H)
+    LockOnLineRule(None, A, yline)
+    RatioRule(None, seg, 1/3, C)
+    HeightRule(None, E, line, H)
+    CrossPointRule(None, yline, line, I)
 
 def update(system: System, app: App):
     """This function calls every program tick
