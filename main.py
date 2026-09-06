@@ -1,9 +1,9 @@
 import workspace_manager
-from core import System
+from core import init
 from custom_config import CustomConfig
 from graphics import App
 
-system = System()
+system = init()
 
 
 workspace_manager.workspace.init(system)

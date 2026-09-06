@@ -51,7 +51,7 @@ class Point(SystemUnit):
         else:
             self.color = color
 
-        self.set_pos(*self.get_pos())  # Re-apply the initial coordinates through the field.
+        SystemUnit._system.add_point(self)
     
     def set_pos(self, x: float, y: float):
         """Move the point to the nearest field-approved position.

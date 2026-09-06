@@ -21,5 +21,11 @@ from .rule import Rule  # noqa: F401
 from .rules import *
 from .shape import Shape  # noqa: F401
 from .shapes import *
-from .system import System  # noqa: F401
-from .system_unit import SystemUnit  # noqa: F401
+from .system import System
+from .system_unit import SystemUnit
+
+
+def init() -> System:
+    system = System()
+    SystemUnit.init_class(system)
+    return system

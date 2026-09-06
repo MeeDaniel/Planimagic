@@ -14,6 +14,8 @@ class Rule(SystemUnit):
         
         self.__dependencies = dependencies
         self.__affects = affects
+
+        SystemUnit._system.add_rule(self)
     
     def get_dependencies(self) -> list[SystemUnit]:
         return self.__dependencies

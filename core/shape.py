@@ -49,6 +49,8 @@ class Shape(SystemUnit):
 
         self.__key_points: list[Point] = key_points
         """Developer note: defining point objects, stored in constructor order."""
+
+        SystemUnit._system.add_shape(self)
     
     def get_key_points(self) -> list[Point]:
         """Return a copy of the points that define the shape."""

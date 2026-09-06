@@ -1,3 +1,5 @@
+from typing import Any
+
 from algorithms import DirectedGraphVertex
 
 
@@ -6,15 +8,20 @@ class SystemUnit(DirectedGraphVertex):
 
     __class_is_inited: bool = False
     __taken_names: set[str]
+    _system: Any    # Due to circular import I use Any instead of System. Lower level abstractions should not to be
+                    # dependent on higher level abstractions. However, I use such system to avoid problems on user level
 
     @staticmethod
-    def __init_class():
+    def init_class(system: Any):
         SystemUnit.__taken_names = set()
         SystemUnit.__class_is_inited = True
+        SystemUnit._system = system
     
     def __init__(self, name: str | None = None):
         if not SystemUnit.__class_is_inited:
-            SystemUnit.__init_class()
+            raise RuntimeError(
+                "The class has not been initialized yet. Please use SystemUnit.init_class() before creating instances."
+            )
 
         super().__init__(self)
         self.__name: str
