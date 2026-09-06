@@ -6,7 +6,7 @@ from ..shapes.line import Line
 class HeightRule(Rule):
     def __init__(
             self,
-            name: str,
+            name: str | None,
             from_point: Point,
             line: Line,
             affects: Point

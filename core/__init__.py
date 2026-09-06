@@ -16,8 +16,6 @@ The imports below form the package's public API, allowing callers to use
 directly.
 """
 
-from .field import Field  # noqa: F401
-from .fields import *
 from .point import Point  # noqa: F401
 from .rule import Rule  # noqa: F401
 from .rules import *

@@ -6,7 +6,7 @@ from ..shapes.line import Line
 class CrossPointRule(Rule):
     def __init__(
             self,
-            name: str,
+            name: str | None,
             line1: Line,
             line2: Line,
             affects: Point

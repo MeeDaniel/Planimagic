@@ -6,7 +6,7 @@ from ..shapes.segment import Segment
 class RatioRule(Rule):
     def __init__(
             self,
-            name: str,
+            name: str | None,
             segment: Segment,
             ratio: float,
             affects: Point
